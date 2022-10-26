@@ -1,6 +1,6 @@
 import "./App.css";
 import Artyom from "artyom.js";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, useAnimationControls } from "framer-motion";
 
 const Friday = new Artyom();
@@ -9,6 +9,12 @@ const numbers = {
   one: 1,
   two: 2,
   three: 3,
+  four: 4,
+  five: 5,
+  six: 6,
+  seven: 7,
+  eight: 8,
+  nine: 9,
 };
 
 function App() {
@@ -17,26 +23,36 @@ function App() {
 
   useEffect(() => {
     console.log(floor);
-    // elevatorControls.start({
-    //   translateY: floor * -106.34,
-    //   transition: {
-    //     type: "tween",
-    //     duration: 2,
-    //   },
-    // });
+    elevatorControls.start({
+      translateY: floor * -100,
+      transition: {
+        type: "tween",
+        duration: 2,
+      },
+    });
   }, [floor]);
 
-  Friday.addCommands([
-    {
-      indexes: ["Go to level *"],
-      smart: true,
-      action: (i, wildcard) => {
-        setFloor(numbers[wildcard]);
-        console.log(numbers[wildcard]);
-        Friday.say("Going to level" + wildcard);
-      },
-    },
-  ]);
+  function updateState() {
+    setFloor(2);
+    Friday.say("Going to level");
+  }
+
+  // Friday.addCommands([
+  //   {
+  //     indexes: ["Go to level *"],
+  //     smart: true,
+  //     action: (i, wildcard) => {
+  //       console.log("why state no updating");
+  //       updateState();
+  //       Friday.say("Going to level" + wildcard);
+  //     },
+  //   },
+  // ]);
+
+  Friday.on(["Go to level *"], true).then((i, wildcard) => {
+    Friday.say("Going to level" + wildcard);
+    setFloor(numbers[wildcard]);
+  });
 
   function initialiseFriday() {
     Friday.initialize({
@@ -67,6 +83,8 @@ function App() {
           <button onClick={killFriday}>Kill</button>
         </div>
         <div>Go to {floor}</div>
+        <button onClick={() => setFloor(4)}>+</button>
+        <button onClick={() => setFloor((curr) => curr - 1)}>-</button>
       </div>
       <div className="elevatorWrapper">
         <div className="floorContainer">
