@@ -2,6 +2,7 @@ import "./App.css";
 import Artyom from "artyom.js";
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
+import Button from "./components/ButtonPanel"
 
 const Friday = new Artyom();
 
@@ -77,6 +78,7 @@ function App() {
           ></motion.div>
         </div>
       </div>
+        <Button levels={9}/>
     </div>
   );
 }
