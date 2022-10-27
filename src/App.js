@@ -1,7 +1,9 @@
 import "./App.css";
 import Artyom from "artyom.js";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion, useAnimationControls } from "framer-motion";
+
+var x = 0;
 
 const Friday = new Artyom();
 
@@ -18,7 +20,8 @@ const numbers = {
 };
 
 function App() {
-  const [floor, setFloor] = useState(0);
+  const initialFloor = 1;
+  const [floor, setFloor] = useState(initialFloor);
   const elevatorControls = useAnimationControls();
 
   useEffect(() => {
@@ -32,27 +35,22 @@ function App() {
     });
   }, [floor]);
 
-  function updateState() {
-    setFloor(2);
-    Friday.say("Going to level");
-  }
-
-  // Friday.addCommands([
-  //   {
-  //     indexes: ["Go to level *"],
-  //     smart: true,
-  //     action: (i, wildcard) => {
-  //       console.log("why state no updating");
-  //       updateState();
-  //       Friday.say("Going to level" + wildcard);
-  //     },
-  //   },
-  // ]);
-
-  Friday.on(["Go to level *"], true).then((i, wildcard) => {
-    Friday.say("Going to level" + wildcard);
-    setFloor(numbers[wildcard]);
-  });
+  useEffect(() => {
+    Friday.addCommands([
+      {
+        indexes: ["Go to level *"],
+        smart: true,
+        action: function (i, wildcard) {
+          if (!(wildcard in numbers)) {
+            Friday.say("I do not understand" + wildcard + ", please repeat");
+          } else {
+            setFloor(numbers[wildcard]);
+            Friday.say("Going to level " + wildcard);
+          }
+        },
+      },
+    ]);
+  }, []);
 
   function initialiseFriday() {
     Friday.initialize({
@@ -65,11 +63,16 @@ function App() {
     });
   }
 
-  // Friday.redirectRecognizedTextOutput((text, isFinal) => {
-  //   if (isFinal) {
-  //     console.log(text);
-  //   }
-  // });
+  function initialiseFridayWithVoice() {
+    Friday.initialize({
+      lang: "en-GB",
+      continuous: true,
+      debug: false,
+      listen: true,
+      soundex: true,
+      name: "Friday",
+    });
+  }
 
   function killFriday() {
     Friday.fatality();
@@ -79,22 +82,39 @@ function App() {
     <div>
       <div className="buttons">
         <div>
-          <button onClick={initialiseFriday}>Start listening</button>
+          <button onClick={initialiseFriday}>
+            Start listening (without name)
+          </button>
+          <button onClick={initialiseFridayWithVoice}>
+            Start listening (with name)
+          </button>
           <button onClick={killFriday}>Kill</button>
         </div>
-        <div>Go to {floor}</div>
-        <button onClick={() => setFloor(4)}>+</button>
+        {/* <div>Go to {floor}</div> */}
+        {/* <button onClick={() => setFloor((curr) => curr + 1)}>+</button>
         <button onClick={() => setFloor((curr) => curr - 1)}>-</button>
+        <button onClick={() => setFloor(numbers["three"])}> level 3</button> */}
       </div>
       <div className="elevatorWrapper">
         <div className="floorContainer">
-          <div>7</div>
-          <div>6</div>
-          <div>5</div>
-          <div>4</div>
-          <div>3</div>
-          <div>2</div>
-          <div>1</div>
+          <div>
+            Level <strong> 6</strong>
+          </div>
+          <div>
+            Level <strong>5</strong>
+          </div>
+          <div>
+            Level <strong>4</strong>
+          </div>
+          <div>
+            Level <strong>3</strong>
+          </div>
+          <div>
+            Level <strong>2</strong>
+          </div>
+          <div className="bottomCell">
+            Level <strong>1</strong>
+          </div>
         </div>
 
         <div className="elevatorTracks">

@@ -47,4 +47,13 @@
   height: 100%;
   border-top-color: black;
   border-top-style: solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.bottomCell {
+  border-bottom-color: black;
+  border-bottom-style: solid;
 }
